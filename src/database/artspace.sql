@@ -28,3 +28,40 @@ CREATE TABLE IF NOT EXISTS artworks (
     FOREIGN KEY (user_id) REFERENCES users(id),
     FOREIGN KEY (category_id) REFERENCES categories(id)
     ) ENGINE = InnoDB;
+
+CREATE TABLE IF NOT EXISTS favorites (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    user_id BIGINT NOT NULL,
+    artwork_id BIGINT NOT NULL,
+
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (artwork_id) REFERENCES artworks(id),
+
+    UNIQUE (user_id, artwork_id)
+    ) ENGINE = InnoDB;
+
+INSERT INTO categories (name) VALUES
+     ('Painting'),
+     ('Drawing'),
+     ('Photography'),
+     ('Digital Art');
+
+SELECT * FROM categories;
+
+INSERT INTO users (name, email, password, role)
+VALUES ('Hal Jordan', 'halj@example.com', 'test-password', 'USER');
+SELECT * FROM users;
+
+INSERT INTO artworks (title, description, image_path, created_at, user_id, category_id)
+VALUES ('Funeral Green', 'A green painting', '/uploads/green/jpg', NOW(), 1, 1);
+SELECT * FROM artworks;
+
+INSERT INTO favorites (user_id, artwork_id)
+VALUES (1, 1);
+SELECT * FROM favorites;
+
+SELECT u.name AS user_name,
+       a.title AS favorite_artwork
+FROM favorites f
+         JOIN users u ON f.user_id = u.id
+         JOIN artworks a ON f.artwork_id = a.id;
