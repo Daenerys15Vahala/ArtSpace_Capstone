@@ -61,7 +61,7 @@ public class ArtworkService {
         if (existing == null) {
             return null;
         }
-        if (input.getCategory() !== null) {
+        if (input.getCategory() != null) {
             Category category = categoryRepository.findById(input.getCategory().getId()).orElse(null);
             if (category == null) {
                 return null;
