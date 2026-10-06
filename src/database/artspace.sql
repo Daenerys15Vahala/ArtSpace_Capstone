@@ -4,18 +4,27 @@ USE art_space;
 SHOW TABLES;
 
 CREATE TABLE IF NOT EXISTS users (
-	UserId BIGINT PRIMARY KEY AUTO_INCREMENT,
-    FirstName VARCHAR(100) NOT NULL,
-    Email VARCHAR(150) NOT NULL UNIQUE,
-    password_hash VARCHAR(100) NOT NULL,
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(150) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
     role VARCHAR(20) NOT NULL
-) ENGINE = InnoDB;
+    ) ENGINE = InnoDB;
 
-CREATE TABLE IF NOT EXISTS art_work (
-	ArtworkId BIGINT PRIMARY KEY AUTO_INCREMENT,
-    ArtTitle VARCHAR(100) NOT NULL,
-    ArtDescription VARCHAR(100) NOT NULL,
-    image_url VARCHAR(50) NOT NULL,
-    FOREIGN KEY (artist_id) references artist(id),
-    FOREIGN KEY (category_id) references artwork(id)
-) ENGINE = InnoDB;
+CREATE TABLE IF NOT EXISTS categories (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(50) NOT NULL UNIQUE
+    ) ENGINE = InnoDB;
+
+CREATE TABLE IF NOT EXISTS artworks (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    title VARCHAR(150) NOT NULL,
+    description VARCHAR(1000),
+    image_path VARCHAR(255) NOT NULL,
+    created_at DATETIME NOT NULL,
+    user_id BIGINT NOT NULL,
+    category_id BIGINT NOT NULL,
+
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (category_id) REFERENCES categories(id)
+    ) ENGINE = InnoDB;
