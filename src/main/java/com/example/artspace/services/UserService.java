@@ -3,6 +3,7 @@ package com.example.artspace.services;
 import com.example.artspace.repositories.UserRepository;
 import org.springframework.stereotype.Service;
 import com.example.artspace.models.User;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
 
@@ -10,8 +11,10 @@ import java.util.List;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+        this.passwordEncoder = passwordEncoder;
         this.userRepository = userRepository;
     }
 
@@ -28,6 +31,12 @@ public class UserService {
     }
 
     public User create(User user) {
+        User existing = findByEmail(user.getEmail());
+        if (existing != null) {
+            return null;
+        }
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setRole("USER");
         return userRepository.save(user);
     }
 
@@ -52,5 +61,9 @@ public class UserService {
         }
         userRepository.delete(existing);
         return true;
+    }
+
+    public boolean passwordMatches(String rawPassword, String encodedPassword) {
+        return passwordEncoder.matches(rawPassword, encodedPassword);
     }
 }
