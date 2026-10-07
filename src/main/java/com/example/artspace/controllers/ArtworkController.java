@@ -5,6 +5,9 @@ import com.example.artspace.models.Artwork;
 import com.example.artspace.services.ArtworkService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.security.Principal;
+import com.example.artspace.models.User;
+import com.example.artspace.services.UserService;
 
 import java.util.List;
 
@@ -13,9 +16,11 @@ import java.util.List;
 public class ArtworkController {
 
     private final ArtworkService artworkService;
+    private final UserService userService;
 
-    public ArtworkController(ArtworkService artworkService) {
+    public ArtworkController(ArtworkService artworkService, UserService userService) {
         this.artworkService = artworkService;
+        this.userService = userService;
     }
 
     @GetMapping
@@ -43,7 +48,9 @@ public class ArtworkController {
     }
 
     @PostMapping
-    public ResponseEntity<Artwork> create(@RequestBody Artwork input) {
+    public ResponseEntity<Artwork> create(@RequestBody Artwork input, Principal principal) {
+        User user = userService.findByEmail(principal.getName());
+        input.setUser(user);
         Artwork saved = artworkService.create(input);
         if (saved == null) {
             return ResponseEntity.badRequest().build();
@@ -52,16 +59,36 @@ public class ArtworkController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Artwork> update(@PathVariable Long id, @RequestBody Artwork input) {
+    public ResponseEntity<Artwork> update(@PathVariable Long id, @RequestBody Artwork input, Principal principal) {
+        Artwork existing = artworkService.findById(id);
+        if (existing == null) {
+            return ResponseEntity.notFound().build();
+        }
+        User loggedInUser = userService.findByEmail(principal.getName());
+        boolean isOwner = existing.getUser().getId().equals(loggedInUser.getId());
+        boolean isAdmin = loggedInUser.getRole().equals("ADMIN");
+        if (!isOwner && !isAdmin) {
+            return ResponseEntity.status(403).build();
+        }
         Artwork updated = artworkService.update(id, input);
         if (updated == null) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.ok(updated);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id, Principal principal) {
+        Artwork existing = artworkService.findById(id);
+        if (existing == null) {
+            return ResponseEntity.notFound().build();
+        }
+        User loggedInUser = userService.findByEmail(principal.getName());
+        boolean isOwner = existing.getUser().getId().equals(loggedInUser.getId());
+        boolean isAdmin = loggedInUser.getRole().equals("ADMIN");
+        if (!isOwner && !isAdmin) {
+            return ResponseEntity.status(403).build();
+        }
         boolean deleted = artworkService.delete(id);
         if (!deleted) {
             return ResponseEntity.notFound().build();

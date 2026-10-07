@@ -63,5 +63,18 @@ SELECT * FROM favorites;
 SELECT u.name AS user_name,
        a.title AS favorite_artwork
 FROM favorites f
-         JOIN users u ON f.user_id = u.id
-         JOIN artworks a ON f.artwork_id = a.id;
+    JOIN users u ON f.user_id = u.id
+    JOIN artworks a ON f.artwork_id = a.id;
+
+
+SELECT id, name, email, password, role
+FROM users
+WHERE email = 'jamie@example.com';
+
+UPDATE users
+SET role = 'ADMIN'
+WHERE email = 'admin@artspace.com';
+
+SELECT id, name, email, role
+FROM users
+WHERE email = 'admin@artspace.com';
