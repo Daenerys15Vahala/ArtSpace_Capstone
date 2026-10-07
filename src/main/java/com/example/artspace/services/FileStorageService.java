@@ -25,6 +25,6 @@ public class FileStorageService {
         String fileName = UUID.randomUUID() + "-" + originalFileName;
         Path filePath = uploadDirectory.resolve(fileName);
         Files.copy(file.getInputStream(), filePath);
-        return filePath.toString();
+        return "/uploads/" + fileName;
     }
 }
