@@ -69,7 +69,7 @@ FROM favorites f
 
 SELECT id, name, email, password, role
 FROM users
-WHERE email = 'jamie@example.com';
+WHERE email = 'hal@example.com';
 
 UPDATE users
 SET role = 'ADMIN'
@@ -78,3 +78,6 @@ WHERE email = 'admin@artspace.com';
 SELECT id, name, email, role
 FROM users
 WHERE email = 'admin@artspace.com';
+
+SELECT id, title, description, image_path, user_id, category_id
+FROM artworks;
