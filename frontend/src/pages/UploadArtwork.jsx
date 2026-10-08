@@ -6,6 +6,7 @@ const [title, setTitle] = useState("");
 const [description, setDescription] = useState("");
 const [categoryId, setCategoryId] = useState("");
 const [image, setImage] = useState(null);
+const [message, setMessage] = useState("");
 
 useEffect(() => {
     fetch("http://localhost:8080/api/categories")
@@ -30,9 +31,9 @@ const handleUpload = async (e) => {e.preventDefault();
                 }
             );
             if (response.ok) {
-                console.log("Artwork uploaded successfully!");
+                console.log("Artwork uploaded successfully! 🎨");
             } else {
-                console.log("Upload failed:", response.status);
+                console.log("Upload failed. Please try again.");
             }
         } catch (error) {
             console.error("Error uploading artwork:", error);
@@ -96,6 +97,7 @@ const handleUpload = async (e) => {e.preventDefault();
                     />
                 </div>
                 <button type="submit">Upload Artwork</button>
+                {message && <p>{message}</p>}
             </form>
         </div>
     );
