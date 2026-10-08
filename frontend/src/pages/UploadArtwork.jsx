@@ -14,15 +14,30 @@ useEffect(() => {
         });
 }, []);
 
-const handleUpload = (e) => {
-    e.preventDefault();
-    const formData = new FormData();
-    formData.append("title", title);
-    formData.append("description", description);
-    formData.append("categoryId", categoryId);
-    formData.append("file", image);
-    console.log("Artwork form is ready to submit");
-}
+const handleUpload = async (e) => {e.preventDefault();
+        const formData = new FormData();
+        formData.append("title", title);
+        formData.append("description", description);
+        formData.append("categoryId", categoryId);
+        formData.append("file", image);
+        try {
+            const response = await fetch(
+                "http://localhost:8080/api/artworks/with-image",
+                {
+                    method: "POST",
+                    credentials: "include",
+                    body: formData,
+                }
+            );
+            if (response.ok) {
+                console.log("Artwork uploaded successfully!");
+            } else {
+                console.log("Upload failed:", response.status);
+            }
+        } catch (error) {
+            console.error("Error uploading artwork:", error);
+        }
+    };
 
 
     return (
