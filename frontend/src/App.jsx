@@ -37,25 +37,24 @@ function App() {
                         <h1>ArtSpace</h1>
                         <p>Discover art, share creativity, and find inspiration.</p>
                     </header>
+
+                    <div className="artwork-grid">{artworks.map((artwork) => (
+                        <div className="artwork-card" key={artwork.id}>
+                            <img src={`http://localhost:8080${artwork.imagePath.startsWith("/")
+                                ? artwork.imagePath : "/" + artwork.imagePath.replaceAll("\\", "/")}`} alt={artwork.title}/>
+                            <div className="artwork-info">
+                                <h2>{artwork.title}</h2>
+                                <p>{artwork.description}</p>
+                                <p>Artist: {artwork.user.name}</p>
+                                <p>Category: {artwork.category.name}</p>
+                            </div>
+                        </div>
+                    ))}
+                    </div>
                 </>
                 } />
                 <Route path="/explore" element={<Explore />} />
             </Routes>
-
-
-            <div className="artwork-grid">{artworks.map((artwork) => (
-                    <div className="artwork-card" key={artwork.id}>
-                        <img src={`http://localhost:8080${artwork.imagePath.startsWith("/") 
-                            ? artwork.imagePath : "/" + artwork.imagePath.replaceAll("\\", "/")}`} alt={artwork.title}/>
-                        <div className="artwork-info">
-                            <h2>{artwork.title}</h2>
-                            <p>{artwork.description}</p>
-                            <p>Artist: {artwork.user.name}</p>
-                            <p>Category: {artwork.category.name}</p>
-                        </div>
-                    </div>
-                ))}
-            </div>
         </div>
     );
 
