@@ -55,3 +55,39 @@
 .artwork-info p {
   color: #746B80;
 }
+
+/*nav bar*/
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #E8C8D8;
+  padding: 15px 30px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+}
+
+/*artspace logo*/
+.navbar-logo {
+  color: #494259;
+  font-size: 26px;
+  margin: 0;
+}
+
+/*nav-links*/
+.nav-links {
+  display: flex;
+  gap: 25px;
+}
+
+.nav-links a {
+  color: #494259;
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+/*hover effect*/
+.nav-links a:hover {
+  color: #FFFFFF;
+}
