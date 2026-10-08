@@ -3,12 +3,29 @@ import { useState } from "react";
 function Login() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [message, setMessage] = useState("");
 
-
-    const handleLogin = (e) => {e.preventDefault();
-
-    console.log("Login submitted!");
-    console.log("Email:", email);
+    const handleLogin = async (e) => {e.preventDefault();
+        try {
+            const response = await fetch("http://localhost:8080/api/auth/login", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                credentials: "include",
+                body: JSON.stringify({
+                    email: email,
+                    password: password,
+                }),
+            });
+            if (response.ok) {
+                setMessage("Login successful! Welcome to ArtSpace");
+            } else {
+                console.log("Invalid email or password. Please try again.");
+            }
+        } catch (error) {
+            console.error("Error connecting to backend:", error);
+        }
     };
 
     return (
@@ -43,6 +60,7 @@ function Login() {
 
                 <button type="submit">Login</button>
             </form>
+            {message && <p>{message}</p>}
         </div>
     );
 }
