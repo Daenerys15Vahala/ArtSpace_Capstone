@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Routes, Route } from "react-router-dom";
 import Explore from "./pages/Explore.jsx";
+import Login from "./pages/Login.jsx";
 import "./App.css";
 
 function App() {
@@ -54,6 +55,7 @@ function App() {
                 </>
                 } />
                 <Route path="/explore" element={<Explore />} />
+                <Route path="/login" element={<Login />} />
             </Routes>
         </div>
     );
