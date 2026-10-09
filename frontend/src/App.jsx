@@ -4,6 +4,7 @@ import { Routes, Route } from "react-router-dom";
 import Explore from "./pages/Explore.jsx";
 import Login from "./pages/Login.jsx";
 import UploadArtwork from "./pages/UploadArtwork.jsx";
+import Register from "./pages/Register.jsx";
 
 import "./App.css";
 
@@ -26,11 +27,12 @@ function App() {
             <nav className="navbar">
                 <h2 className="navbar-logo">Artspace</h2>
                 <div className="nav-links">
-                    <a href="/">Home</a>
-                    <a href="/explore">Explore</a>
-                    <a href="/favorites">Favorites</a>
-                    <a href="/login">Login</a>
-                    <a href="/register">Register</a>
+                    <Link to="/">Home</Link>
+                    <Link to="/explore">Explore</Link>
+                    <Link to="/favorites">Favorites</Link>
+                    <Link to="/upload">Upload Artwork</Link>
+                    <Link to="/login">Login</Link>
+                    <Link to="/register">Register</Link>
                 </div>
             </nav>
 
@@ -59,6 +61,7 @@ function App() {
                 <Route path="/explore" element={<Explore />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/upload" element={<UploadArtwork />} />
+                <Route path="/register" element={<Register />} />
             </Routes>
         </div>
     );
