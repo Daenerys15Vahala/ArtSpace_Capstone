@@ -1,34 +1,55 @@
 import { useEffect, useState } from "react";
 
 function Explore() {
-    const [artworkIds, setArtworkIds] = useState([]);
     const [artworks, setArtworks] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
 
     useEffect(() => {
         const fetchArtworks = async () => {
             try {
                 const response = await fetch(
-                    "https://collectionapi.metmuseum.org/public/collection/v1.1/search?q=painting&hasImages=true&limit=12"
+                    "\"https://api.artic.edu/api/v1/artworks?limit=6&fields=id,title,artist_display,date_display,image_id\""
                 );
                 if (!response.ok) {
-                    throw new Error("Failed to fetch artworks");
-                }
+                    throw new Error("Failed to fetch artworks");}
                 const data = await response.json();
-                setArtworkIds(data.objectIDs || []);
-                console.log("Met artwork IDs:", data.objectIDs);
+                console.log("Chicago API response:", data);
+                const firstArtwork = data.data.find((artwork) => artwork.image_id);
+                if (firstArtwork) {
+                    console.log(
+                        "Test image URL:",
+                        `${data.config.iiif_url}/${firstArtwork.image_id}/full/400,/0/default.jpg`);}
+                console.log("Chicago image server:", data.config?.iiif_url);
+                const validArtworks = (data.data || []).filter(
+                    (artwork) => artwork.image_id);
+                setArtworks(validArtworks);
+                console.log("Chicago artworks:", validArtworks);
             } catch (error) {
-                console.error("Error fetching Met artworks:", error);
-            }
+                console.error("Error fetching artworks:", error);
+                setError("Unable to load artworks. Please try again.");
+            } finally {
+                setLoading(false);}
         };
         fetchArtworks();
     }, []);
 
     return (
-        <div className="explore-page">
-            <h1>Explore Artworks 🎨</h1>
-            <p>Discover beautiful artwork from The Metropolitan Museum of Art.</p>
-            <p>Artworks found: {artworkIds.length}</p>
+        <div className="artwork-gallery">
+            {artworks.map((artwork) => (
+                <div className="artwork-card" key={artwork.id}>
+                    <img
+                        src={`https://www.artic.edu/iiif/2/${artwork.image_id}/full/400,/0/default.jpg`}
+                        alt={artwork.title}
+                        loading="lazy"
+                    />
+                    <h3>{artwork.title}</h3>
+                    <p>{artwork.artist_display || "Unknown Artist"}</p>
+                    <p>{artwork.date_display || "Date unknown"}</p>
+                </div>
+            ))}
         </div>
     );
 }
+
 export default Explore;
