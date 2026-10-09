@@ -1,9 +1,11 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 function Login() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [message, setMessage] = useState("");
+    const navigate = useNavigate();
 
     const handleLogin = async (e) => {e.preventDefault();
         try {
@@ -20,6 +22,7 @@ function Login() {
             });
             if (response.ok) {
                 setMessage("Login successful! Welcome to ArtSpace");
+                navigate("/upload");
             } else {
                 console.log("Invalid email or password. Please try again.");
             }
