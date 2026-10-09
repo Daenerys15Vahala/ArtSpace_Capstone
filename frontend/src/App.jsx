@@ -21,6 +21,22 @@ function App() {
         });
   }, []);
 
+    const handleLogout = async () => {
+        try {
+            const response = await fetch("http://localhost:8080/api/auth/logout", {
+                method: "POST",
+                credentials: "include"
+            });
+            if (response.ok) {
+                window.location.href = "/login";
+            } else {
+                console.error("Logout failed:", response.status);
+            }
+        } catch (error) {
+            console.error("Logout error:", error);
+        }
+    };
+
 
     return (
         <div className="artspace">
@@ -63,6 +79,8 @@ function App() {
                 <Route path="/upload" element={<UploadArtwork />} />
                 <Route path="/register" element={<Register />} />
             </Routes>
+            <button type="button" onClick={handleLogout}>Logout</button>
+
         </div>
     );
 }
