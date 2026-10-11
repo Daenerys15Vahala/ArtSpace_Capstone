@@ -9,20 +9,16 @@ function Explore() {
         const fetchArtworks = async () => {
             try {
                 const response = await fetch(
-                    "\"https://api.artic.edu/api/v1/artworks?limit=6&fields=id,title,artist_display,date_display,image_id\""
+                    "http://localhost:8080/api/pixabay/artworks"
                 );
+                console.log("API status:", response.status);
+                console.log("Response type:", response.headers.get("content-type"));
                 if (!response.ok) {
-                    throw new Error("Failed to fetch artworks");}
+                    throw new Error(`API returned status ${response.status}`);
+                }
                 const data = await response.json();
-                console.log("Chicago API response:", data);
-                const firstArtwork = data.data.find((artwork) => artwork.image_id);
-                if (firstArtwork) {
-                    console.log(
-                        "Test image URL:",
-                        `${data.config.iiif_url}/${firstArtwork.image_id}/full/400,/0/default.jpg`);}
-                console.log("Chicago image server:", data.config?.iiif_url);
-                const validArtworks = (data.data || []).filter(
-                    (artwork) => artwork.image_id);
+                console.log("Pixabay API response:", data);
+                const validArtworks = data.hits || [];
                 setArtworks(validArtworks);
                 console.log("Chicago artworks:", validArtworks);
             } catch (error) {
@@ -39,13 +35,16 @@ function Explore() {
             {artworks.map((artwork) => (
                 <div className="artwork-card" key={artwork.id}>
                     <img
-                        src={`https://www.artic.edu/iiif/2/${artwork.image_id}/full/400,/0/default.jpg`}
-                        alt={artwork.title}
+                        src={artwork.webformatURL}
+                        alt={artwork.tags || "Artwork"}
                         loading="lazy"
                     />
-                    <h3>{artwork.title}</h3>
-                    <p>{artwork.artist_display || "Unknown Artist"}</p>
-                    <p>{artwork.date_display || "Date unknown"}</p>
+                    <h3>
+                        {artwork.tags
+                            ? artwork.tags.split(",").slice(0, 2).join(" · ")
+                            : "Untitled Artwork"}
+                    </h3>
+                    <p>By {artwork.user || "Unknown Artist"}</p>
                 </div>
             ))}
         </div>

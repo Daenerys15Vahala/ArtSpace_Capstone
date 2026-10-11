@@ -23,10 +23,50 @@
 }
 
 /*artwork gallery*/
-.artwork-grid {
+/* Home and Explore galleries */
+.artwork-grid,
+.artwork-gallery {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+  max-width: 1200px;
+  margin: 30px auto;
+}
+
+/* artwork cards */
+.artwork-card {
+  background-color: white;
+  border: 1px solid #E8C8D8;
+  border-radius: 12px;
+  overflow: hidden;
+  padding-bottom: 15px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.artwork-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(73, 66, 89, 0.12);
+}
+
+.artwork-card img {
+  width: 100%;
+  height: 230px;
+  object-fit: cover;
+}
+
+/* responsive gallery */
+@media (max-width: 900px) {
+  .artwork-grid,
+  .artwork-gallery {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 600px) {
+  .artwork-grid,
+  .artwork-gallery {
+    grid-template-columns: 1fr;
+  }
 }
 
 /*artwork cards*/
