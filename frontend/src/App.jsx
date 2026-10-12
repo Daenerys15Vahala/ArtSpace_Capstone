@@ -10,6 +10,24 @@ import "./App.css";
 
 function App() {
   const [artworks, setArtworks] = useState([]);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+    useEffect(() => {
+        const checkLogin = async () => {
+            try {
+                const response = await fetch(
+                    "http://localhost:8080/api/auth/me",
+                    {
+                        method: "GET",
+                        credentials: "include"});
+                setIsLoggedIn(response.ok);
+            } catch (error) {
+                console.error("Error checking login:", error);
+                setIsLoggedIn(false);
+            }
+        };
+
+        checkLogin();
+    }, []);
   useEffect(() => {
       fetch("http://localhost:8080/api/artworks")
         .then((response) => response.json())
@@ -41,7 +59,9 @@ function App() {
             );
 
             if (response.ok) {
-                console.log("Logged out successfully!");window.location.href = "/login";
+                console.log("Logged out successfully!");
+                setIsLoggedIn(false);
+                window.location.href = "/login";
             } else {
                 console.error("Logout failed:", response.status);
             }
@@ -57,10 +77,16 @@ function App() {
                 <div className="nav-links">
                     <Link to="/">Home</Link>
                     <Link to="/explore">Explore</Link>
-                    <Link to="/favorites">Favorites</Link>
-                    <Link to="/upload">Upload Artwork</Link>
-                    <Link to="/login">Login</Link>
-                    <Link to="/register">Register</Link>
+                    {isLoggedIn && (<>
+                            <Link to="/favorites">Favorites</Link>
+                            <Link to="/upload">Upload Artwork</Link>
+                            <button type="button" className="logout-btn" onClick={handleLogout}>Logout</button></>)}
+                    {!isLoggedIn && (
+                        <>
+                            <Link to="/login">Login</Link>
+                            <Link to="/register">Register</Link>
+                        </>
+                    )}
                 </div>
             </nav>
 
@@ -87,12 +113,10 @@ function App() {
                 </>
                 } />
                 <Route path="/explore" element={<Explore />} />
-                <Route path="/login" element={<Login />} />
+                <Route path="/login" element={<Login onLogin={() => setIsLoggedIn(true)} />}/>
                 <Route path="/upload" element={<UploadArtwork />} />
                 <Route path="/register" element={<Register />} />
             </Routes>
-            <button type="button" onClick={handleLogout}>Logout</button>
-
         </div>
     );
 }

@@ -67,4 +67,18 @@ public class AuthController {
         return token;
     }
 
+    @GetMapping("/me")
+    public ResponseEntity<?> currentUser(Authentication authentication) {
+
+        if (authentication == null
+                || !authentication.isAuthenticated()
+                || authentication instanceof
+                org.springframework.security.authentication.AnonymousAuthenticationToken) {
+
+            return ResponseEntity.status(401).build();
+        }
+
+        return ResponseEntity.ok().build();
+    }
+
 }

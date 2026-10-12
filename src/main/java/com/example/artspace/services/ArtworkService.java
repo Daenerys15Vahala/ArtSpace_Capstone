@@ -17,7 +17,8 @@ public class ArtworkService {
     private final UserRepository userRepository;
     private final FileStorageService fileStorageService;
 
-    public ArtworkService(ArtworkRepository artworkRepository, CategoryRepository categoryRepository, UserRepository userRepository, FileStorageService fileStorageService) {
+    public ArtworkService(ArtworkRepository artworkRepository, CategoryRepository categoryRepository, UserRepository userRepository,
+                          FileStorageService fileStorageService) {
         this.artworkRepository = artworkRepository;
         this.categoryRepository = categoryRepository;
         this.userRepository = userRepository;

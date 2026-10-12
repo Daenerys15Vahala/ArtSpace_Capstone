@@ -68,7 +68,7 @@ useEffect(() => {
 
             <form onSubmit={handleUpload}>
                 <div>
-                    <label htmlFor="upload">Artwork Title:</label>
+                    <label htmlFor="upload" className="gallery-header">Artwork Title:</label>
                     <input
                         type="text"
                         id="title"

@@ -17,7 +17,6 @@ class FileStorageServiceTest {
     private final FileStorageService fileStorageService =
             new FileStorageService();
 
-    // Creates a small, real image for testing uploads
     private byte[] createImage(String format) throws Exception {
         BufferedImage image =
                 new BufferedImage(10, 10, BufferedImage.TYPE_INT_RGB);

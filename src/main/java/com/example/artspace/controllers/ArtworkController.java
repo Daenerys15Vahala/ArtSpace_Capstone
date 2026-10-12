@@ -117,7 +117,8 @@ public class ArtworkController {
 
     @PostMapping("/with-image")
     public ResponseEntity<Artwork> createWithImage(
-            @RequestParam("title") String title, @RequestParam(value = "description", required = false) String description, @RequestParam("categoryId") Long categoryId, @RequestParam("file") MultipartFile file, Principal principal) throws IOException {
+            @RequestParam("title") String title, @RequestParam(value = "description", required = false) String description,
+            @RequestParam("categoryId") Long categoryId, @RequestParam("file") MultipartFile file, Principal principal) throws IOException {
 
         User user = userService.findByEmail(principal.getName());
         String imagePath;

@@ -131,3 +131,149 @@
 .nav-links a:hover {
   color: #FFFFFF;
 }
+
+
+/* ===================================
+   ARTSPACE FORMS
+   Login, Register & Upload Artwork
+   =================================== */
+
+/* Page headings */
+.artspace > h1,
+.artspace > h2 {
+  color: #494259;
+  text-align: center;
+  font-size: 36px;
+  margin-bottom: 12px;
+}
+
+/* Form cards */
+.artspace form {
+  background-color: #FFFFFF;
+  max-width: 480px;
+  width: 100%;
+  margin: 30px auto;
+  padding: 35px;
+  border: 1px solid #E8C8D8;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(73, 66, 89, 0.10);
+  box-sizing: border-box;
+
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* Form labels */
+.artspace form label {
+  display: block;
+  color: #494259;
+  font-size: 15px;
+  font-weight: 600;
+  text-align: left;
+}
+
+/* Text fields, dropdowns and textarea */
+.artspace form input,
+.artspace form textarea,
+.artspace form select {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  margin-top: 6px;
+  background-color: #FFF9F5;
+  color: #494259;
+  border: 1px solid #E8C8D8;
+  border-radius: 8px;
+  font-size: 15px;
+  font-family: Arial, sans-serif;
+  box-sizing: border-box;
+}
+
+/* Description field */
+.artspace form textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+/* Highlight selected field */
+.artspace form input:focus,
+.artspace form textarea:focus,
+.artspace form select:focus {
+  outline: none;
+  border-color: #A8789A;
+  box-shadow: 0 0 0 3px rgba(232, 200, 216, 0.35);
+}
+
+/* Upload file field */
+.artspace form input[type="file"] {
+  background-color: #FFFFFF;
+  cursor: pointer;
+}
+
+/* Form buttons */
+.artspace form button {
+  background-color: #494259;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 20px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+/* Button hover */
+.artspace form button:hover {
+  background-color: #746B80;
+  transform: translateY(-2px);
+}
+
+/* Disabled buttons */
+.artspace form button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Form subtitles */
+.artspace > p {
+  color: #746B80;
+  text-align: center;
+  font-size: 17px;
+}
+
+/* Mobile adjustments */
+@media (max-width: 600px) {
+  .artspace {
+    padding: 18px;
+  }
+
+  .artspace form {
+    padding: 22px;
+  }
+
+  .artspace > h1 {
+    font-size: 30px;
+  }
+}
+
+h1 {
+  color: #2e303a;
+}
+
+.logout-btn {
+  background: none;
+  border: none;
+  color: #494259;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 0;
+  font-family: inherit;
+}
+
+.logout-btn:hover {
+  color: #FFFFFF;
+}
