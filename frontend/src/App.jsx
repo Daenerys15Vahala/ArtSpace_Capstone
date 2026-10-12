@@ -11,24 +11,28 @@ function App() {
   const [artworks, setArtworks] = useState([]);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [selectedArtwork, setSelectedArtwork] = useState(null);
-    const [favorites, setFavorites] = useState([]);
-    useEffect(() => {
-        const checkLogin = async () => {
-            try {
-                const response = await fetch(
-                    "http://localhost:8080/api/auth/me",
-                    {
-                        method: "GET",
-                        credentials: "include"});
-                setIsLoggedIn(response.ok);
-            } catch (error) {
-                console.error("Error checking login:", error);
-                setIsLoggedIn(false);
-            }
-        };
+  const [favorites, setFavorites] = useState([]);
+  const [userRole, setUserRole] = useState(null);
 
-        checkLogin();
+    useEffect(() => {
+        fetch("http://localhost:8080/api/auth/me", {credentials: "include",
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error("Not logged in");
+                }
+                return response.json();
+            })
+            .then((user) => {
+                setIsLoggedIn(true);
+                setUserRole(user.role);
+            })
+            .catch(() => {
+                setIsLoggedIn(false);
+                setUserRole(null);
+            });
     }, []);
+
   useEffect(() => {
       fetch("http://localhost:8080/api/artworks")
         .then((response) => response.json())
@@ -80,6 +84,7 @@ function App() {
             if (response.ok) {
                 console.log("Logged out successfully!");
                 setIsLoggedIn(false);
+                setUserRole(null);
                 window.location.href = "/login";
             } else {
                 console.error("Logout failed:", response.status);
@@ -143,6 +148,9 @@ function App() {
                                 onClick={handleLogout}
                             >Logout</button></>
                     )}
+                    {isLoggedIn && userRole === "ADMIN" && (
+                        <Link to="/admin">Admin Dashboard</Link>
+                    )}
                     {!isLoggedIn && (<>
                             <Link to="/login">Login</Link>
                             <Link to="/register">Register</Link></>)}
@@ -196,7 +204,14 @@ function App() {
                             </div></>}
                 />
                 <Route path="/explore" element={<Explore />} />
-                <Route path="/login" element={<Login onLogin={() => setIsLoggedIn(true)} />}/>
+                <Route path="/login" element={
+                        <Login onLogin={async () => {setIsLoggedIn(true);
+                                const response = await fetch(
+                                    "http://localhost:8080/api/auth/me",
+                                    { credentials: "include" });
+                                if (response.ok) {
+                                    const user = await response.json();
+                                    setUserRole(user.role);}}}/>}/>
                 <Route path="/upload" element={<UploadArtwork />} />
                 <Route path="/register" element={<Register />} />
             </Routes>

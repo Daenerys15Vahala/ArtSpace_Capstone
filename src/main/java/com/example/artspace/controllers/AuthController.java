@@ -19,6 +19,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.web.bind.annotation.GetMapping;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -69,16 +70,17 @@ public class AuthController {
 
     @GetMapping("/me")
     public ResponseEntity<?> currentUser(Authentication authentication) {
-
         if (authentication == null
                 || !authentication.isAuthenticated()
                 || authentication instanceof
                 org.springframework.security.authentication.AnonymousAuthenticationToken) {
-
-            return ResponseEntity.status(401).build();
-        }
-
-        return ResponseEntity.ok().build();
-    }
-
+            return ResponseEntity.status(401).build();}
+        User user = userService.findByEmail(authentication.getName());
+        if (user == null) {return ResponseEntity.status(401).build();}
+        return ResponseEntity.ok(Map.of(
+                "id", user.getId(),
+                "name", user.getName(),
+                "email", user.getEmail(),
+                "role", user.getRole()
+        ));}
 }

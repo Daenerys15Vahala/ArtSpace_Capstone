@@ -5,6 +5,7 @@ import com.example.artspace.models.User;
 import com.example.artspace.services.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.util.Map;
 
 import java.util.List;
 
@@ -17,17 +18,16 @@ public class UserController {
     }
 
     @GetMapping
-    public List<User> findAll(){
-        return userService.findAll();
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<User> findById(@PathVariable Long id) {
-        User user = userService.findById(id);
-        if(user == null){
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(user);
+    public List<Map<String, Object>> findAll() {
+        return userService.findAll()
+                .stream()
+                .map(user -> Map.<String, Object>of(
+                        "id", user.getId(),
+                        "name", user.getName(),
+                        "email", user.getEmail(),
+                        "role", user.getRole()
+                ))
+                .toList();
     }
 
     @PutMapping("/{id}")
