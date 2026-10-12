@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import { Link, Routes, Route } from "react-router-dom";
+import { Link, Routes, Route, Navigate } from "react-router-dom";
 import Explore from "./pages/Explore.jsx";
 import Login from "./pages/Login.jsx";
 import UploadArtwork from "./pages/UploadArtwork.jsx";
 import Register from "./pages/Register.jsx";
-
+import AdminDashboard from "./pages/AdminDashboard.jsx";
 import "./App.css";
 
 function App() {
@@ -13,6 +13,9 @@ function App() {
   const [selectedArtwork, setSelectedArtwork] = useState(null);
   const [favorites, setFavorites] = useState([]);
   const [userRole, setUserRole] = useState(null);
+
+    console.log("Logged in:", isLoggedIn);
+    console.log("User role:", userRole);
 
     useEffect(() => {
         fetch("http://localhost:8080/api/auth/me", {credentials: "include",
@@ -76,11 +79,7 @@ function App() {
             const response = await fetch(
                 "http://localhost:8080/api/auth/logout",
                 {method: "POST", credentials: "include", headers: {
-                        [csrfToken.headerName]: csrfToken.token,
-                    },
-                }
-            );
-
+                        [csrfToken.headerName]: csrfToken.token,},});
             if (response.ok) {
                 console.log("Logged out successfully!");
                 setIsLoggedIn(false);
@@ -214,6 +213,8 @@ function App() {
                                     setUserRole(user.role);}}}/>}/>
                 <Route path="/upload" element={<UploadArtwork />} />
                 <Route path="/register" element={<Register />} />
+                <Route path="/admin" element={
+                    isLoggedIn && userRole === "ADMIN" ? <AdminDashboard /> : <Navigate to="/" replace />}/>
             </Routes>
             {selectedArtwork && (
                 <div

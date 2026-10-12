@@ -52,11 +52,11 @@ public class AuthController {
         context.setAuthentication(authentication);
         SecurityContextHolder.setContext(context);
         securityContextRepository.saveContext(context, request, response);
-
-        User user = userService.findByEmail(input.getEmail());
-        if (user == null) {
+        System.out.println("Authenticated username: " + authentication.getName());
+        User user = userService.findByEmail(input.getEmail());{
             return ResponseEntity.status(401).body("Invalid email or password");
         }
+        if (user == null)
         if (!userService.passwordMatches(input.getPassword(), user.getPassword())) {
             return ResponseEntity.status(401).body("Invalid email or password");
         }
