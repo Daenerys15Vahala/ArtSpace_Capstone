@@ -7,28 +7,31 @@ function Login() {
     const [message, setMessage] = useState("");
     const navigate = useNavigate();
 
-    const handleLogin = async (e) => {e.preventDefault();
+    const handleLogin = async (e) => {
+        e.preventDefault();
         try {
-            const response = await fetch("http://localhost:8080/api/auth/login", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                credentials: "include",
-                body: JSON.stringify({
-                    email: email,
-                    password: password,
-                }),
-            });
+            const csrfResponse = await fetch(
+                "http://localhost:8080/api/auth/csrf",
+                {method: "GET", credentials: "include",});
+            if (!csrfResponse.ok) {
+                throw new Error("Could not retrieve CSRF token");}
+            const csrfToken = await csrfResponse.json();
+            const response = await fetch(
+                "http://localhost:8080/api/auth/login",
+                {method: "POST", headers: {"Content-Type": "application/json", [csrfToken.headerName]: csrfToken.token,},
+                    credentials: "include",
+                    body: JSON.stringify({
+                        email: email,
+                        password: password,}),});
             if (response.ok) {
                 setMessage("Login successful! Welcome to ArtSpace");
                 navigate("/upload");
             } else {
-                console.log("Invalid email or password. Please try again.");
+                setMessage("Invalid email or password. Please try again.");
             }
         } catch (error) {
             console.error("Error connecting to backend:", error);
-        }
+            setMessage("Unable to log in. Please try again.");}
     };
 
     return (

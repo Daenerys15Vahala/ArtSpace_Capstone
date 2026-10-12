@@ -71,7 +71,8 @@ public class ArtworkService {
 
         existing.setTitle(input.getTitle());
         existing.setDescription(input.getDescription());
-        existing.setImagePath(input.getImagePath());
+        if (input.getImagePath() != null && !input.getImagePath().isBlank()) {
+            existing.setImagePath(input.getImagePath());}
         return artworkRepository.save(existing);
     }
 

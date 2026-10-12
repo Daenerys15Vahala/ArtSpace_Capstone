@@ -15,28 +15,48 @@ useEffect(() => {
         });
 }, []);
 
-const handleUpload = async (e) => {e.preventDefault();
+    const handleUpload = async (e) => {
+        e.preventDefault();
+        setMessage("");
+        if (!image) {
+            setMessage("Please select an image.");
+            return;
+        }
+        if (!["image/jpeg", "image/png"].includes(image.type)) {
+            setMessage("Only JPG and PNG images are allowed.");
+            return;
+        }
+        if (image.size > 5 * 1024 * 1024) {
+            setMessage("Image must be smaller than 5 MB.");
+            return;
+        }
         const formData = new FormData();
         formData.append("title", title);
         formData.append("description", description);
         formData.append("categoryId", categoryId);
         formData.append("file", image);
         try {
+            const csrfResponse = await fetch(
+                "http://localhost:8080/api/auth/csrf",
+                {method: "GET", credentials: "include",});
+            if (!csrfResponse.ok) {
+                throw new Error("Unable to retrieve CSRF token");
+            }
+            const csrfToken = await csrfResponse.json();
             const response = await fetch(
                 "http://localhost:8080/api/artworks/with-image",
-                {
-                    method: "POST",
-                    credentials: "include",
-                    body: formData,
-                }
-            );
+                {method: "POST", credentials: "include", headers: {[csrfToken.headerName]: csrfToken.token,}, body: formData,});
             if (response.ok) {
-                console.log("Artwork uploaded successfully! 🎨");
+                setMessage("Artwork uploaded successfully! 🎨");
+                console.log("Artwork uploaded successfully!");
+            } else if (response.status === 401 || response.status === 403) {
+                setMessage("Upload denied. Please log in and try again.");
             } else {
-                console.log("Upload failed. Please try again.");
+                setMessage("Upload failed. Please try again.");
+                console.error("Upload failed:", response.status);
             }
-        } catch (error) {
-            console.error("Error uploading artwork:", error);
+        } catch (error) {console.error("Error uploading artwork:", error);
+            setMessage("Error connecting to the server.");
         }
     };
 
@@ -91,7 +111,7 @@ const handleUpload = async (e) => {e.preventDefault();
                     <input
                         type="file"
                         id="image"
-                        accept="image/"
+                        accept="image/jpeg,image/png"
                         onChange={(e) => setImage(e.target.files[0] ?? null)}
                         required
                     />

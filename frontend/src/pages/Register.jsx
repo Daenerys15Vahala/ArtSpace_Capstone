@@ -9,27 +9,35 @@ function Register() {
     const [message, setMessage] = useState("");
     const handleRegister = async (e) => {
         e.preventDefault();
-
+        setMessage("");
         try {
-            const response = await fetch("http://localhost:8080/api/auth/register", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    name: name,
-                    email: email,
-                    password: password
-                })
-            });
+            // Step 1: Get CSRF token from Spring Security
+            const csrfResponse = await fetch(
+                "http://localhost:8080/api/auth/csrf",
+                {method: "GET", credentials: "include",}
+            );
+            if (!csrfResponse.ok) {
+                throw new Error("Could not retrieve CSRF token");}
+            const csrfToken = await csrfResponse.json();
+            const response = await fetch(
+                "http://localhost:8080/api/auth/register",
+                {method: "POST", headers: {
+                        "Content-Type": "application/json",
+                        [csrfToken.headerName]: csrfToken.token,
+                    },
+                    credentials: "include",
+                    body: JSON.stringify({name: name, email: email, password: password,
+                    }),}
+            );
             if (response.ok) {
                 setMessage("Account created successfully! 🎨");
             } else {
                 setMessage("Registration failed. Please try again.");
+                console.error("Registration failed:", response.status);
             }
         } catch (error) {
             console.error("Registration error:", error);
-            setMessage("Could not connect to the server.");
+            setMessage("Could not complete registration. Please try again.");
         }
     };
 
