@@ -52,10 +52,6 @@ INSERT INTO users (name, email, password, role)
 VALUES ('Hal Jordan', 'halj@example.com', 'test-password', 'USER');
 SELECT * FROM users;
 
-INSERT INTO artworks (title, description, image_path, created_at, user_id, category_id)
-VALUES ('Funeral Green', 'A green painting', '/uploads/green/jpg', NOW(), 1, 1);
-SELECT * FROM artworks;
-
 INSERT INTO favorites (user_id, artwork_id)
 VALUES (1, 1);
 SELECT * FROM favorites;

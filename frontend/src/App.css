@@ -441,3 +441,99 @@ h1 {
     animation: none;
   }
 }
+
+/* Clickable artwork cards */
+.artwork-card {
+  cursor: pointer;
+}
+
+/* Dark background behind expanded artwork */
+.artwork-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(30, 25, 40, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  z-index: 1000;
+}
+
+/* Expanded artwork container */
+.artwork-modal-content {
+  position: relative;
+  background: #FFF9F5;
+  padding: 25px;
+  border-radius: 16px;
+  max-width: 750px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+/* Show the complete image */
+.artwork-modal-content img {
+  max-width: 100%;
+  max-height: 65vh;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
+/* Artwork information */
+.artwork-modal-content h2 {
+  color: #494259;
+  margin-top: 15px;
+}
+
+.artwork-modal-content p {
+  color: #746B80;
+  margin: 8px 0;
+}
+
+/* Close button */
+.modal-close {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  background: white;
+  border: none;
+  border-radius: 50%;
+  font-size: 28px;
+  cursor: pointer;
+  color: #494259;
+}
+
+.artwork-card {
+  position: relative;
+}
+
+.favorite-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 42px;
+  height: 42px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.95);
+  color: #a8789a;
+  font-size: 28px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  transition: transform 0.2s ease;
+}
+
+.favorite-btn:hover {
+  transform: scale(1.12);
+}
+
+.favorite-btn.is-favorite {
+  color: #d65a8a;
+}

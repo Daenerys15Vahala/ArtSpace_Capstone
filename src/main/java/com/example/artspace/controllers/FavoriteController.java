@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 import com.example.artspace.models.User;
 import com.example.artspace.services.UserService;
+import java.util.Map;
 
 import java.util.List;
 
@@ -24,19 +25,26 @@ public class FavoriteController {
     }
 
     @GetMapping
-    public List<Favorite> findMyFavorites(Principal principal) {
-        User user = userService.findByEmail(principal.getName());
-        return favoriteService.findByUserId(user.getId());
+    public List<Map<String, Object>> findMyFavorites(Principal principal) {User user = userService.findByEmail(principal.getName());
+        return favoriteService.findByUserId(user.getId())
+                .stream()
+                .map(favorite -> Map.<String, Object>of(
+                        "id", favorite.getId(),
+                        "artworkId", favorite.getArtwork().getId())).toList();
     }
 
     @PostMapping("/artwork/{artworkId}")
-    public ResponseEntity<Favorite> create(@PathVariable Long artworkId, Principal principal) {
+    public ResponseEntity<Map<String, Object>> create(
+            @PathVariable Long artworkId,
+            Principal principal) {
         User user = userService.findByEmail(principal.getName());
         Favorite saved = favoriteService.create(user.getId(), artworkId);
         if (saved == null) {
             return ResponseEntity.badRequest().build();
         }
-        return ResponseEntity.status(201).body(saved);
+        return ResponseEntity.status(201).body(Map.of(
+                        "id", saved.getId(),
+                        "artworkId", saved.getArtwork().getId()));
     }
 
     @DeleteMapping("/artwork/{artworkId}")

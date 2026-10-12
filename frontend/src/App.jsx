@@ -10,6 +10,8 @@ import "./App.css";
 function App() {
   const [artworks, setArtworks] = useState([]);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [selectedArtwork, setSelectedArtwork] = useState(null);
+    const [favorites, setFavorites] = useState([]);
     useEffect(() => {
         const checkLogin = async () => {
             try {
@@ -37,6 +39,24 @@ function App() {
           console.error("Error loading artworks:", error);
         });
   }, []);
+
+    useEffect(() => {
+        if (!isLoggedIn) {
+            setFavorites([]);
+            return;
+        }
+        fetch("http://localhost:8080/api/favorites", {
+            credentials: "include",
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error("Could not load favorites");
+                }
+                return response.json();
+            })
+            .then((data) => setFavorites(data))
+            .catch((error) => console.error(error));
+    }, [isLoggedIn]);
 
     const handleLogout = async () => {
         try {
@@ -66,6 +86,44 @@ function App() {
             }
         } catch (error) {
             console.error("Logout error:", error);
+        }
+    };
+    const handleFavorite = async (artworkId) => {
+        if (!isLoggedIn) {
+            alert("Please log in to save your favorite artworks!");
+            return;
+        }
+        const isFavorite = favorites.some(
+            (favorite) => favorite.artworkId === artworkId
+        );
+        try {
+            const csrfResponse = await fetch(
+                "http://localhost:8080/api/auth/csrf",
+                { credentials: "include" }
+            );
+            if (!csrfResponse.ok) {
+                throw new Error("Could not get CSRF token");
+            }
+            const csrf = await csrfResponse.json();
+            const response = await fetch(
+                `http://localhost:8080/api/favorites/artwork/${artworkId}`,
+                {
+                    method: isFavorite ? "DELETE" : "POST",
+                    credentials: "include",
+                    headers: {
+                        [csrf.headerName]: csrf.token,},});
+            if (!response.ok) {
+                throw new Error("Could not update favorite");}
+            if (isFavorite) {
+                setFavorites((current) =>
+                    current.filter(
+                        (favorite) => favorite.artworkId !== artworkId));
+            } else {
+                const saved = await response.json();
+                setFavorites((current) => [...current, saved]);}
+        } catch (error) {
+            console.error("Favorite error:", error);
+            alert("Something went wrong updating your favorites.");
         }
     };
 
@@ -105,10 +163,29 @@ function App() {
                                 <p>Every artwork tells a story. Find one that speaks to you.</p></div>
                             <div className="artwork-grid">
                                 {artworks.map((artwork) => (
-                                    <div className="artwork-card" key={artwork.id}>
+                                    <div
+                                        className="artwork-card"
+                                        key={artwork.id}
+                                        onClick={() => setSelectedArtwork(artwork)}
+                                        role="button"
+                                        tabIndex={0}
+                                        onKeyDown={(e) => {
+                                            if (e.key === "Enter" || e.key === " ") {
+                                                e.preventDefault();
+                                                setSelectedArtwork(artwork);}}}>
                                         <img
                                             src={`http://localhost:8080${artwork.imagePath.startsWith("/") ? artwork.imagePath : "/" + artwork.imagePath.replaceAll("\\", "/")}`}
                                             alt={artwork.title}/>
+                                        <button type="button" className={`favorite-btn ${favorites.some((favorite) => favorite.artworkId === artwork.id) ? "is-favorite" : ""}`}
+                                            aria-label={
+                                                favorites.some((favorite) => favorite.artworkId === artwork.id) ? "Remove from favorites" : "Add to favorites"}
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                handleFavorite(artwork.id);}}>
+                                            {favorites.some((favorite) => favorite.artworkId === artwork.id)
+                                                ? "♥"
+                                                : "♡"}
+                                        </button>
                                         <div className="artwork-info">
                                             <h2>{artwork.title}</h2>
                                             <p>{artwork.description}</p>
@@ -123,6 +200,29 @@ function App() {
                 <Route path="/upload" element={<UploadArtwork />} />
                 <Route path="/register" element={<Register />} />
             </Routes>
+            {selectedArtwork && (
+                <div
+                    className="artwork-modal"
+                    onClick={() => setSelectedArtwork(null)}>
+                    <div
+                        className="artwork-modal-content"
+                        role="dialog"
+                        aria-modal="true"
+                        aria-label={selectedArtwork.title}
+                        onClick={(e) => e.stopPropagation()}>
+                        <button
+                            className="modal-close"
+                            onClick={() => setSelectedArtwork(null)}
+                            aria-label="Close artwork">
+                        </button>
+                        <img src={`http://localhost:8080${selectedArtwork.imagePath.startsWith("/") ? selectedArtwork.imagePath : "/" + selectedArtwork.imagePath.replaceAll("\\", "/")}`} alt={selectedArtwork.title}/>
+                        <h2>{selectedArtwork.title}</h2>
+                        <p>{selectedArtwork.description}</p>
+                        <p>Artist: {selectedArtwork.user.name}</p>
+                        <p>Category: {selectedArtwork.category.name}</p>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
