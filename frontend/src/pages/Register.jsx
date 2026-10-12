@@ -79,12 +79,8 @@ function Register() {
                         />
                 </div>
 
-                <button type="submit">Register</button>
-                {message === "Account created successfully! 🎨" && (
-                    <p>
-                        <Link to="/login">Go to Login</Link>
-                    </p>
-                )}
+                <button type="submit">Register</button>{message && <p>{message}</p>}
+                {message === "Account created successfully! 🎨" && (<p><Link to="/login">Go to Login</Link></p>)}
             </form>
         </div>
     );

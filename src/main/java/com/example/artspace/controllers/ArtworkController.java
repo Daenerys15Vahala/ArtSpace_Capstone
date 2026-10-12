@@ -104,10 +104,12 @@ public class ArtworkController {
     }
 
     @PostMapping("/upload")
-    public ResponseEntity<String> uploadImage(@RequestParam("file")MultipartFile file) {
+    public ResponseEntity<String> uploadImage(@RequestParam("file") MultipartFile file) {
         try {
             String imagePath = fileStorageService.saveFile(file);
             return ResponseEntity.ok(imagePath);
+        } catch (IllegalArgumentException exception) {
+            return ResponseEntity.badRequest().body(exception.getMessage());
         } catch (IOException exception) {
             return ResponseEntity.internalServerError().build();
         }
@@ -118,7 +120,10 @@ public class ArtworkController {
             @RequestParam("title") String title, @RequestParam(value = "description", required = false) String description, @RequestParam("categoryId") Long categoryId, @RequestParam("file") MultipartFile file, Principal principal) throws IOException {
 
         User user = userService.findByEmail(principal.getName());
-        String imagePath = fileStorageService.saveFile(file);
+        String imagePath;
+        try {imagePath = fileStorageService.saveFile(file);
+        } catch (IllegalArgumentException exception) {
+            return ResponseEntity.badRequest().build();}
         Artwork input = new Artwork();
         input.setTitle(title);
         input.setDescription(description);

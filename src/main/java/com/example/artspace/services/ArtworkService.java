@@ -15,11 +15,13 @@ public class ArtworkService {
     private final ArtworkRepository artworkRepository;
     private final CategoryRepository categoryRepository;
     private final UserRepository userRepository;
+    private final FileStorageService fileStorageService;
 
-    public ArtworkService(ArtworkRepository artworkRepository, CategoryRepository categoryRepository, UserRepository userRepository) {
+    public ArtworkService(ArtworkRepository artworkRepository, CategoryRepository categoryRepository, UserRepository userRepository, FileStorageService fileStorageService) {
         this.artworkRepository = artworkRepository;
         this.categoryRepository = categoryRepository;
         this.userRepository = userRepository;
+        this.fileStorageService = fileStorageService;
     }
 
     public List<Artwork> findAll() {
@@ -50,6 +52,9 @@ public class ArtworkService {
         if (category == null) {
             return null;
         }
+        if (!fileStorageService.isValidImagePath(input.getImagePath())) {
+            return null;
+        }
         input.setUser(user);
         input.setCategory(category);
         return artworkRepository.save(input);
@@ -71,8 +76,6 @@ public class ArtworkService {
 
         existing.setTitle(input.getTitle());
         existing.setDescription(input.getDescription());
-        if (input.getImagePath() != null && !input.getImagePath().isBlank()) {
-            existing.setImagePath(input.getImagePath());}
         return artworkRepository.save(existing);
     }
 

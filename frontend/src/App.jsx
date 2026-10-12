@@ -23,12 +23,25 @@ function App() {
 
     const handleLogout = async () => {
         try {
-            const response = await fetch("http://localhost:8080/api/auth/logout", {
-                method: "POST",
-                credentials: "include"
-            });
+            const csrfResponse = await fetch(
+                "http://localhost:8080/api/auth/csrf",
+                {method: "GET", credentials: "include",
+                }
+            );
+            if (!csrfResponse.ok) {
+                throw new Error("Could not retrieve CSRF token");
+            }
+            const csrfToken = await csrfResponse.json();
+            const response = await fetch(
+                "http://localhost:8080/api/auth/logout",
+                {method: "POST", credentials: "include", headers: {
+                        [csrfToken.headerName]: csrfToken.token,
+                    },
+                }
+            );
+
             if (response.ok) {
-                window.location.href = "/login";
+                console.log("Logged out successfully!");window.location.href = "/login";
             } else {
                 console.error("Logout failed:", response.status);
             }
@@ -36,7 +49,6 @@ function App() {
             console.error("Logout error:", error);
         }
     };
-
 
     return (
         <div className="artspace">
