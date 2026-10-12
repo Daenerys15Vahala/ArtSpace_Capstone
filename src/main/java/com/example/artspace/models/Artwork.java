@@ -14,6 +14,9 @@ public class Artwork {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
+    private LocalDateTime createdAt;
+
     @Column(nullable = false, length = 150)
     private String title;
 
@@ -22,9 +25,6 @@ public class Artwork {
 
     @Column(nullable = false)
     private String imagePath;
-
-    @Column(nullable = false)
-    private LocalDateTime createdAt;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "user_id", nullable = false)
