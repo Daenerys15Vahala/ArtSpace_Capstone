@@ -53,10 +53,10 @@ public class AuthController {
         SecurityContextHolder.setContext(context);
         securityContextRepository.saveContext(context, request, response);
         System.out.println("Authenticated username: " + authentication.getName());
-        User user = userService.findByEmail(input.getEmail());{
+        User user = userService.findByEmail(input.getEmail());
+        if (user == null) {
             return ResponseEntity.status(401).body("Invalid email or password");
         }
-        if (user == null)
         if (!userService.passwordMatches(input.getPassword(), user.getPassword())) {
             return ResponseEntity.status(401).body("Invalid email or password");
         }
