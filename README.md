@@ -4,6 +4,11 @@
 
 ArtSpace gives artists a place to showcase their work and gives visitors an easy way to explore a growing gallery. Registered users can upload artwork, save favorites, and manage their own contributions, while administrators have access to additional management tools.
 
+<img width="955" height="986" alt="Screenshot 2026-10-12 113519" src="https://github.com/user-attachments/assets/ae3b988b-1528-44ad-9226-940239f5cee7" />
+<img width="954" height="874" alt="Screenshot 2026-10-12 113642" src="https://github.com/user-attachments/assets/ee6e6ad3-0b5d-4020-8c98-8b2556cc6e59" />
+
+
+
 ## Project Overview
 
 ArtSpace was developed as a software engineering capstone project to bring together frontend development, backend REST APIs, authentication, relational databases, and third-party API integration in one application.
@@ -156,7 +161,9 @@ Potential next steps include:
 
 ## Screenshots
 
-_Add screenshots of the home gallery, artwork upload page, favorites, Explore page, and admin dashboard here._
+<img width="282" height="347" alt="Screenshot 2026-10-12 161721" src="https://github.com/user-attachments/assets/d4118021-704b-4094-bc16-255778006fca" />
+<img width="1868" height="978" alt="Screenshot 2026-10-12 165600" src="https://github.com/user-attachments/assets/5919d33d-79d1-4fb7-b644-fa8e80ad7a07" />
+<img width="1845" height="989" alt="Screenshot 2026-10-12 170213" src="https://github.com/user-attachments/assets/a449e693-6827-4a17-b729-7729c08d2b25" />
 
 ## Author
 
